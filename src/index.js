@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import YTSearch from 'youtube-api-search';
 import SearchBar from './components/search_bar';
 import VideoList from './components/video_list';
+import VideoDetail from './components/video_detail';
 // If you really want to steal this, go for it I guess?
 // I'll be deleting it in a week or so anyway
 const API_KEY = 'AIzaSyANQJsaU8X63UVi1MZ2v7688WIrjcJDcKY';
@@ -14,10 +15,16 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { videos: [] };
+        this.state = {
+            videos: [],
+            selectedVideo: null
+        };
 
         YTSearch({ key: API_KEY, term: 'surfboards' }, (videos) => {
-            this.setState({ videos });
+            this.setState({
+                videos: videos,
+                selectedVideo: videos[0]
+            });
         });
     }
 
@@ -25,7 +32,10 @@ class App extends Component {
         return (
             <div>
                 <SearchBar />
-                <VideoList videos={this.state.videos} />
+                <VideoDetail video={this.state.selectedVideo} />
+                <VideoList
+                    onVideoSelect={selectedVideo => this.setState({ selectedVideo })}
+                    videos={this.state.videos} />
             </div>
         );
     }
